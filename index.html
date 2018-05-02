@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>WikiPedia</title>
+    <style type="text/css">
+
+      
+#container{
+  
+
+      #display-result{
+       
+        width: 500px;
+      }
+  
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+  </head>
+  <body>
+    
+
+<div class="jumbotron" id="container">
+    <a class="btn btn-primary" onclick="randomPage('https://en.wikipedia.org/wiki/Special:Random');"  role="button">Random Article</a>
+
+    <p></p>
+
+     <form class="form-inline my-2 my-lg-0" id="myForm" >
+      <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="searchedItem" id="searchedItem">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick="getAPI()"   id="btn" >Search</button>
+    </form>
+    <p></p>
+      <div id="display-result"  ></div>
+      <p></p>
+
+    </div>
+
+
+    <script type="text/javascript">
+    $(document).ready(function(){
+
+    $('#myForm').submit(function(e){
+      e.preventDefault();
+      getAPI();
+    })      
+
+    });
+          
+
+   
+
+  function processResult(apiResult){
+    $('#display-result').html("");
+    var res = 0;
+    for(var i=0;i<apiResult.query.search.length;i++){
+      res = i+1;
+      $('#display-result').append('<div class="card"><div class="card-header"> Result Number: '+res+'</div><div class="card-body"><h5 class="card-title">'+apiResult.query.search[i].title+'</h5><p class="card-text">'+apiResult.query.search[i].snippet+'</p><a href="https://en.wikipedia.org/?curid='+apiResult.query.search[i].pageid+'" class="btn btn-primary">Go To Wiki!</a></div></div><p></p>');
+    }
+    
+  }
+
+
+
+
+     
+
+    function randomPage(url){
+      var win = window.open(url , '_blank');
+      win.focus();
+    }
+
+
+    function getAPI (){
+      var inpt = $('#searchedItem').val();
+    if(inpt.length === 0)
+    $('#display-result').html("<p><h3>Enter some text!</h3><p>")
+else
+
+     $.ajax({
+                url: 'https://en.wikipedia.org/w/api.php',
+                data: { action: 'query', list: 'search', srsearch: $("input[name=searchedItem]").val(), format: 'json' },
+                dataType: 'jsonp',
+                success: processResult
+            });
+            
+
+    }
+
+
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
